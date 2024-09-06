@@ -14,14 +14,16 @@ data = pd.read_csv("https://github.com/dustywhite7/econ8310-assignment1/raw/main
 trip_data = data[['Timestamp','trips']]
 trip_data.date = pd.to_datetime(trip_data.Timestamp, infer_datetime_format=True)
 trip_data = pd.DataFrame(trip_data.values, columns = ['ds','y'])
-trip_data
 
-m = Prophet(changepoint_prior_scale=0.5)
+model = Prophet(changepoint_prior_scale=0.5)
 
-m.fit(trip_data)
+modelFit = model.fit(trip_data)
 
-#future = m.make_future_dataframe(periods=100)
-pred = m.make_future_dataframe(freq='H',periods=744)
-model = m.predict(pred)
+future = model.make_future_dataframe(freq='H',periods=744)
+predData = model.predict(future)
 
-modelFit = m.plot(model)
+pred = predData[['ds','yhat']]
+pred = pred['yhat'].values[-744:]
+
+plt = model.plot(predData)
+
